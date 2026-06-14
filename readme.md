@@ -10,5 +10,5 @@
 
 ### 1. Клонируйте репозиторий:
 ```bash
-git clone <ссылка_на_репозиторий>
+git clone https://github.com/audioracket/teamFinder_yandexpracticum.git
 cd teamFinder_yandexpracticum
