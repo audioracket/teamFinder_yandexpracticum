@@ -16,9 +16,9 @@
         {{ form.non_field_errors }}
 
         <div class="form-field">
-            {{ form.email.label_tag }}
-            {{ form.email }}
-            {{ form.email.errors }}
+            {{ form.username.label_tag }}
+            {{ form.username }}
+            {{ form.username.errors }}
         </div>
 
         <div class="form-field">
@@ -29,6 +29,6 @@
 
         <button type="submit">Войти</button>
     </form>
-    <p class="auth-link">Нет аккаунта? <a href="{% url 'users:register' %}">Зарегистрироваться</a></p>
+    <p class="auth-link">Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
 </div>
 {% endblock %}

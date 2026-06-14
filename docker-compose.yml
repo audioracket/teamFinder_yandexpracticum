@@ -1,14 +1,29 @@
+version: '3.8'
+
 services:
   db:
-    image: postgres:16
+    image: postgres:13.0
+    volumes:
+      - pg_data:/var/lib/postgresql/data/
     env_file:
       - .env
-    container_name: teamfinder_db
+    restart: always
+
+  backend:
+    build: ./
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn team_finder.wsgi:application --bind 0.0.0.0:8000"
     ports:
-      - "5432:5432"
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - .env
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./media:/app/media
     restart: always
 
 volumes:
-  postgres_data:
+  pg_data:
