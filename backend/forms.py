@@ -1,20 +1,30 @@
 import re
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
+
 from .models import User, Project
 
 
-class CustomUserCreationForm(UserCreationForm):
+class GithubUrlMixin:
+    def clean_github_url(self):
+        url = self.cleaned_data.get('github_url')
+        if url and 'github.com' not in url:
+            raise forms.ValidationError('Ссылка должна вести именно на Github.')
+        return url
+
+
+class UserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         fields = ('name', 'surname', 'email', 'password1', 'password2')
 
 
-class CustomAuthenticationForm(AuthenticationForm):
+class AuthenticationForm(AuthenticationForm):
     username = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'autofocus': True}))
 
 
-class ProfileEditForm(forms.ModelForm):
+class ProfileEditForm(GithubUrlMixin, forms.ModelForm):
     class Meta:
         model = User
         fields = ('name', 'surname', 'avatar', 'about', 'phone', 'github_url')
@@ -31,24 +41,12 @@ class ProfileEditForm(forms.ModelForm):
             raise forms.ValidationError('Формат: 8XXXXXXXXXX или +7XXXXXXXXXX')
         return phone
 
-    def clean_github_url(self):
-        url = self.cleaned_data.get('github_url')
-        if url and 'github.com' not in url:
-            raise forms.ValidationError('Ссылка должна вести именно на Github.')
-        return url
 
-
-class ProjectForm(forms.ModelForm):
+class ProjectForm(GithubUrlMixin, forms.ModelForm):
     class Meta:
         model = Project
         fields = ('name', 'description', 'github_url', 'status')
 
-    def clean_github_url(self):
-        url = self.cleaned_data.get('github_url')
-        if url and 'github.com' not in url:
-            raise forms.ValidationError('Ссылка должна вести именно на Github.')
-        return url
 
-
-class CustomPasswordChangeForm(PasswordChangeForm):
+class PasswordChangeForm(PasswordChangeForm):
     pass
